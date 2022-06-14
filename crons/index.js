@@ -27,6 +27,7 @@ const deleteOldAticle = () => {
 
 module.exports = function () {
   cron.schedule("* * * * *", () => {
+    console.log("delete every minute");
     deleteOldAticle();
   });
 };
