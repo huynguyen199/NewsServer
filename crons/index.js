@@ -2,27 +2,29 @@ var admin = require("firebase-admin");
 const cron = require("node-cron");
 const { getFirestore } = require("firebase-admin/firestore");
 
-var serviceAccount = require("../testproject-5e51e-firebase-adminsdk-6z8ru-09931b8ac1.json");
+var serviceAccount = require("../newsapp-eb14e-firebase-adminsdk-xe5so-1c9af1f839.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://testproject-5e51e.firebaseio.com",
+  databaseURL: "https://newsapp-eb14e.firebaseio.com",
 });
 
 var db = getFirestore();
 
-const docRef = db.collection("users");
+const articleRef = db.collection("article");
 
 const deleteOldAticle = () => {
   const dateAfter15days = new Date();
-  const day = 15;
+  dateAfter15days.setDate(dateAfter15days.getDate() - 5);
 
-  dateAfter15days.setDate(dateAfter15days.getDate() - day);
-  const ref = articleRef.where("publishedAt", "<", dateAfter15days);
+  // const ref = articleRef.
 
-  ref.get().then((querySnapshot) => {
-    Promise.all(querySnapshot.docs.map((d) => d.ref.delete()));
-  });
+  articleRef
+    .where("publishedAt", "<", new Date(dateAfter15days))
+    .get()
+    .then((querySnapshot) => {
+      Promise.all(querySnapshot.docs.map((d) => d.ref.delete()));
+    });
 };
 
 module.exports = function () {
